@@ -1,4 +1,8 @@
-import { Transaction } from "@/types/transaction";
+import {
+  RecurringInterval,
+  Transaction,
+  TransactionType,
+} from "@/types/transaction";
 
 let mockData: Transaction[] = [
   {
@@ -6,12 +10,12 @@ let mockData: Transaction[] = [
     amount: 100,
     description: "Mock transaction 1",
     date: "2021-01-01",
-    type: "income",
+    type: TransactionType.INCOME,
     category: "Salary",
     account: "Bank",
     notes: "Mock notes",
     isRecurring: false,
-    recurringInterval: "monthly",
+    recurringInterval: RecurringInterval.MONTHLY,
     recurringEndDate: "2021-12-31",
   },
   {
@@ -19,12 +23,12 @@ let mockData: Transaction[] = [
     amount: 200,
     description: "Mock transaction 2",
     date: "2021-01-02",
-    type: "expense",
+    type: TransactionType.EXPENSE,
     category: "Food",
     account: "Cash",
     notes: "Mock notes",
     isRecurring: false,
-    recurringInterval: "monthly",
+    recurringInterval: RecurringInterval.MONTHLY,
     recurringEndDate: "2021-12-31",
   },
 ];
