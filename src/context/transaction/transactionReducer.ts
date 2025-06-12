@@ -3,6 +3,7 @@ import {
   TransactionModalMode,
   TransactionAction,
 } from "@/types/transaction";
+import { transactionLogger } from "@/lib/logger";
 
 export interface TransactionUIState {
   selectedTransaction: Transaction | null;
@@ -28,35 +29,49 @@ export function transactionReducer(
   state: TransactionUIState,
   action: TransactionUIAction
 ): TransactionUIState {
+  transactionLogger.debug("🔄 Action dispatched:", action.type, action);
+  transactionLogger.debug("📄 Current state:", state);
+
+  let newState: TransactionUIState;
+
   switch (action.type) {
     case TransactionAction.SELECT_TRANSACTION:
-      return { ...state, selectedTransaction: action.payload };
+      newState = { ...state, selectedTransaction: action.payload };
+      break;
     case TransactionAction.CLEAR_SELECTION:
-      return { ...state, selectedTransaction: null };
+      newState = { ...state, selectedTransaction: null };
+      break;
     case TransactionAction.TOGGLE_MODAL:
-      return { ...state, isModalOpen: !state.isModalOpen };
+      newState = { ...state, isModalOpen: !state.isModalOpen };
+      break;
     case TransactionAction.OPEN_ADD_MODAL:
-      return {
+      newState = {
         ...state,
         isModalOpen: true,
         modalMode: TransactionModalMode.ADD,
         selectedTransaction: null,
       };
+      break;
     case TransactionAction.OPEN_EDIT_MODAL:
-      return {
+      newState = {
         ...state,
         isModalOpen: true,
         modalMode: TransactionModalMode.EDIT,
         selectedTransaction: action.payload,
       };
+      break;
     case TransactionAction.OPEN_VIEW_MODAL:
-      return {
+      newState = {
         ...state,
         isModalOpen: true,
         modalMode: TransactionModalMode.VIEW,
         selectedTransaction: action.payload,
       };
+      break;
     default:
-      return state;
+      newState = state;
   }
+
+  transactionLogger.debug("✅ New state:", newState);
+  return newState;
 }

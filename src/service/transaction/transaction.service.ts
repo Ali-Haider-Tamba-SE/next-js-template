@@ -4,6 +4,14 @@ import {
   TransactionType,
 } from "@/types/transaction";
 
+import { Logger } from "@/lib/logger";
+
+const logger = new Logger({
+  enabled: true,
+  level: "debug",
+  prefix: "transaction.service",
+});
+
 let mockData: Transaction[] = [
   {
     id: "tx1",
@@ -51,6 +59,8 @@ export const deleteTransaction = async (id: string) => {
 };
 
 export const updateTransaction = async (id: string, tx: Transaction) => {
-  mockData = mockData.map((tx) => (tx.id === id ? tx : tx));
+  logger.debug("🔄 updateTransaction", id, tx);
+  mockData = mockData.map((t) => (t.id === id ? tx : t));
+  logger.debug("🔄 updateTransaction", mockData);
   return new Promise((resolve) => setTimeout(() => resolve(tx), 300));
 };

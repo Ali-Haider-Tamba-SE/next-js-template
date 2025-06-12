@@ -7,9 +7,23 @@ import {
 import TransactionModal from "@/app/transaction/components/TransactionModal";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+import { useDeleteTransaction } from "@/hook/transaction/useTransaction";
+import { useUpdateTransaction } from "@/hook/transaction/useTransaction";
+import { useCreateTransaction } from "@/hook/transaction/useTransaction";
+
+import { Logger } from "@/lib/logger";
 
 const TransactionCard = ({ transaction }: { transaction: Transaction }) => {
   const { dispatch, state } = useTransactionContext();
+  const { mutate: deleteTransaction } = useDeleteTransaction();
+  const { mutate: updateTransaction } = useUpdateTransaction();
+  const { mutate: createTransaction } = useCreateTransaction();
+
+  const logger = new Logger({
+    enabled: true,
+    level: "debug",
+    prefix: "TransactionCard",
+  });
 
   const handleViewTransaction = () => {
     dispatch({
@@ -30,7 +44,17 @@ const TransactionCard = ({ transaction }: { transaction: Transaction }) => {
   };
 
   const handleDeleteTransaction = () => {
-    // TODO: Implement delete functionality
+    deleteTransaction(transaction.id);
+  };
+
+  const handleUpdateTransaction = (tx: Transaction) => {
+    logger.debug("🔄 handleUpdateTransaction", tx);
+    updateTransaction(tx);
+  };
+
+  const handleCreateTransaction = (tx: Transaction) => {
+    logger.debug("🔄 handleCreateTransaction", tx);
+    createTransaction(tx);
   };
 
   const formatDate = (dateString: string) => {
@@ -47,8 +71,8 @@ const TransactionCard = ({ transaction }: { transaction: Transaction }) => {
       {state.isModalOpen && (
         <TransactionModal
           mode={state.modalMode}
-          onSave={() => {}}
-          onUpdate={() => {}}
+          onSave={handleCreateTransaction}
+          onUpdate={handleUpdateTransaction}
         />
       )}
 
@@ -69,7 +93,7 @@ const TransactionCard = ({ transaction }: { transaction: Transaction }) => {
                 )}
               >
                 {transaction.type === TransactionType.INCOME ? "+" : "-"}$
-                {transaction.amount.toFixed(2)}
+                {Number(transaction.amount)?.toFixed(2) || 0}
               </span>
             </div>
 
